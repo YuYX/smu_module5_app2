@@ -1,1 +1,1 @@
-#SUM Mobile App Dev Module 5 App2
+#SMU Mobile App Dev Module 5 App2
