@@ -12,27 +12,47 @@ import {
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { commonStyles } from "../styles/commonStyles";
 
 const API = "https://yuyx.pythonanywhere.com";
 const API_LOGIN = "/newuser";
-import { commonStyles } from "../styles/commonStyles";
 
 export default function SignUpScreen({ navigation }) {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [newuser, setNewuser] = useState("")
+  const [errorText, setErrorText] = useState(""); 
 
   async function signup()
   { 
     console.log("---- Sign-Up Time ----")
     Keyboard.dismiss()
 
+    try{
+      const response = await axios.post(API + API_LOGIN, {
+        username,
+        password,
+      });
+      console.log("Success Sign-Up!");
+      setNewuser(username);
+      //navigation.navigate("SignIn")
+    }catch(error){
+      console.log("Error in Sign-Up!");
+      console.log(error.response); 
+      setErrorText(error.response.data.description);
+    } 
+  } 
+
+  function goto_signin()
+  {
+    navigation.navigate("SignIn")
   }
 
   return (
-    <TouchableWithoutFeedback>
-      <View styles={styles.container}>
-        <Text styles={styles.title}>Create a new user</Text>
-        <Text styles={styles.fieldTitle}>New Username</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Create a new user</Text>
+        <Text style={styles.fieldTitle}>New Username</Text>
         <TextInput 
           style={styles.input} 
           autoCapitalize="none"
@@ -50,10 +70,28 @@ export default function SignUpScreen({ navigation }) {
           onChangeText={(input)=>{setPassword(input)}}
         />
         <View style={{flexDirection:"row"}}>
-          <TouchableOpacity>
-
+          <TouchableOpacity onPress={signup} style={styles.signupButton}>
+            <Text style={styles.buttonText}>Sign Up!</Text>
           </TouchableOpacity>
-        </View>
+        </View> 
+        <TouchableOpacity onPress={goto_signin} style={{flexDirection:'row'}}>
+          <Text style={
+            {
+              backgroundColor: 'blue',
+              padding: 4,
+              fontSize: 20,
+              color: 'yellow',  
+            }}>Sign in to new user!</Text>
+            <Text style={{
+              marginLeft: 20,
+              fontSize: 20,
+              fontWeight: 'bold',
+              height: 36,
+              color: "red",
+            }}>{newuser}</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.errorText}>{errorText}</Text>  
       </View>
     </TouchableWithoutFeedback>
   );
@@ -99,5 +137,14 @@ const styles = StyleSheet.create({
     padding: 18,
     marginTop: 12,
     marginBottom: 36,
+  },
+  errorText: {
+    color: "red",
+    height: 40,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 18,
   },
 });

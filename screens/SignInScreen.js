@@ -50,7 +50,7 @@ export default function SignInScreen({ navigation }) {
 
   function signup()
   {
-    navigation.navigate("SignUp");
+    navigation.navigate("SignUp"); 
   }
 
   return (
