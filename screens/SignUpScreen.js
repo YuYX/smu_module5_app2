@@ -10,6 +10,8 @@ import {
   View 
 } from "react-native";
 
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { commonStyles } from "../styles/commonStyles";
@@ -21,7 +23,8 @@ export default function SignUpScreen({ navigation }) {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [newuser, setNewuser] = useState("")
-  const [errorText, setErrorText] = useState(""); 
+  const [errorText, setErrorText] = useState("")
+  const [showsignup, setShowsignup] = useState(false)
 
   async function signup()
   { 
@@ -35,6 +38,7 @@ export default function SignUpScreen({ navigation }) {
       });
       console.log("Success Sign-Up!");
       setNewuser(username);
+      setShowsignup(true) 
       //navigation.navigate("SignIn")
     }catch(error){
       console.log("Error in Sign-Up!");
@@ -46,6 +50,40 @@ export default function SignUpScreen({ navigation }) {
   function goto_signin()
   {
     navigation.navigate("SignIn")
+  }
+
+  function button_for_return_to_signin()
+  {
+    //console.log("running new function!");
+
+    if(showsignup){
+      return(
+      <TouchableOpacity onPress={goto_signin} style={{flexDirection:'row'}}>
+        <Text style={
+          { 
+            padding: 4,
+            fontSize: 20,
+            color: 'black',  
+          }}>Sign-in New User:</Text>
+          <TouchableOpacity onPress={goto_signin}>
+            <FontAwesome5
+              name="hand-point-right"
+              size={30}
+              color="blue"
+            />
+          </TouchableOpacity>
+          <Text style={{
+            marginLeft: 20,
+            fontSize: 20,
+            fontWeight: 'bold',
+            height: 36,
+            color: "red",
+          }}>{newuser}</Text>
+      </TouchableOpacity>
+      )}
+      else{
+        return null
+      }
   }
 
   return (
@@ -74,22 +112,8 @@ export default function SignUpScreen({ navigation }) {
             <Text style={styles.buttonText}>Sign Up!</Text>
           </TouchableOpacity>
         </View> 
-        <TouchableOpacity onPress={goto_signin} style={{flexDirection:'row'}}>
-          <Text style={
-            {
-              backgroundColor: 'blue',
-              padding: 4,
-              fontSize: 20,
-              color: 'yellow',  
-            }}>Sign in to new user!</Text>
-            <Text style={{
-              marginLeft: 20,
-              fontSize: 20,
-              fontWeight: 'bold',
-              height: 36,
-              color: "red",
-            }}>{newuser}</Text>
-        </TouchableOpacity>
+
+        {button_for_return_to_signin()}
 
         <Text style={styles.errorText}>{errorText}</Text>  
       </View>
